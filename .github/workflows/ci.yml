@@ -60,9 +60,10 @@ jobs:
       # -------------------------------
       - name: Install Cloud Foundry CLI
         run: |
-          wget -q -O cf-cli.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary"
+          wget -q -O cf-cli.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=8.7.1"
           tar -xzf cf-cli.tgz
-          sudo mv cf*/cf /usr/local/bin/cf
+          # find the binary automatically (cf or cf8) and move it into PATH
+          sudo mv $(find . -type f -name 'cf*' -perm -111 | head -n 1) /usr/local/bin/cf
           cf --version
       
 
