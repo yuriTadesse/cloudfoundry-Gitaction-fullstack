@@ -58,12 +58,11 @@ jobs:
       # -------------------------------
       # ☁️ Deploy to Cloud Foundry
       # -------------------------------
-      - name: Install Cloud Foundry CLI
-        run: |
-          wget -q -O cf-cli.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&source=github"
-          tar -xzf cf-cli.tgz
-          sudo mv cf /usr/local/bin/
-          cf --version
+      - name: Set up Cloud Foundry CLI
+        uses: cloudfoundry/cf-cli-action@v1
+        with:
+          version: '8.7.1'
+
 
       - name: Deploy to Cloud Foundry
         run: |
