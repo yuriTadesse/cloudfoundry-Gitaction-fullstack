@@ -2,7 +2,7 @@ name: CI/CD to Cloud Foundry with Prometheus & Grafana
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-deploy:
