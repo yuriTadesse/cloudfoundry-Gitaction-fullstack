@@ -1,0 +1,13 @@
+---
+applications:
+  - name: demo-frontend
+    memory: 128M
+    instances: 1
+    buildpacks:
+      - staticfile_buildpack
+    path: dist/frontend
+    env:
+      FORCE_HTTPS: true
+    # routes:
+      # - route: demo-frontend.cfapps.us10-001.hana.ondemand.com
+

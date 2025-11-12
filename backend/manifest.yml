@@ -1,0 +1,15 @@
+---
+applications:
+  - name: demo-backend
+    memory: 512M
+    instances: 1
+    path: target/demo-0.0.1-SNAPSHOT.jar
+    buildpacks:
+      - java_buildpack
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+      SPRING_PROFILES_ACTIVE: cloud
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus
+    services:
+      - prometheus-service
+      - grafana-service

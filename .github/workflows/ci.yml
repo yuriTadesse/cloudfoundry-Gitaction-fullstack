@@ -1,0 +1,89 @@
+name: CI/CD to Cloud Foundry with Prometheus & Grafana
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -------------------------------
+      # 🧱 Checkout source
+      # -------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # -------------------------------
+      # 🧩 Setup Node.js for Angular
+      # -------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.0'
+
+      # -------------------------------
+      # 🧱 Build Angular
+      # -------------------------------
+      - name: Build Angular frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npx ng build --configuration production
+          echo "✅ Angular build done."
+
+      # -------------------------------
+      # ☕ Setup Java + Maven
+      # -------------------------------
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # -------------------------------
+      # 🏗️ Build Spring Boot backend
+      # -------------------------------
+      - name: Build Spring Boot backend
+        working-directory: backend
+        run: |
+          rm -rf src/main/resources/static/*
+          mkdir -p src/main/resources/static
+          cp -r ../frontend/dist/frontend/* src/main/resources/static/
+          mvn clean package -DskipTests
+          echo "✅ Backend JAR built."
+
+      # -------------------------------
+      # ☁️ Deploy to Cloud Foundry
+      # -------------------------------
+      - name: Deploy to Cloud Foundry
+        uses: citizen-of-planet-earth/cf-cli-action@v2
+        with:
+          cf_api: ${{ secrets.CF_API }}
+          cf_username: ${{ secrets.CF_USERNAME }}
+          cf_password: ${{ secrets.CF_PASSWORD }}
+          cf_org: ${{ secrets.CF_ORG }}
+          cf_space: ${{ secrets.CF_SPACE }}
+          command: push
+        env:
+          CF_DOCKER_PASSWORD: ${{ secrets.CF_PASSWORD }}
+
+      # -------------------------------
+      # 📊 Create Prometheus & Grafana services
+      # -------------------------------
+      - name: Create Prometheus & Grafana services
+        run: |
+          cf create-service prometheus standard prometheus-service || echo "Prometheus already exists"
+          cf create-service grafana standard grafana-service || echo "Grafana already exists"
+          cf bind-service demo-backend prometheus-service || echo "Already bound"
+          cf bind-service prometheus-service grafana-service || echo "Grafana already bound"
+          cf restage demo-backend
+          echo "✅ Monitoring stack deployed."
+
+      # -------------------------------
+      # 🔍 Get Grafana dashboard URL
+      # -------------------------------
+      - name: Show Grafana service details
+        run: |
+          cf service grafana-service
