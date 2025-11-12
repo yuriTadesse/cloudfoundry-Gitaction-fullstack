@@ -42,6 +42,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+
       # -------------------------------
       # 🏗️ Build Spring Boot backend
       # -------------------------------
@@ -57,17 +58,18 @@ jobs:
       # -------------------------------
       # ☁️ Deploy to Cloud Foundry
       # -------------------------------
+      - name: Install Cloud Foundry CLI
+        run: |
+          wget -q -O cf-cli.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&source=github"
+          tar -xzf cf-cli.tgz
+          sudo mv cf /usr/local/bin
+          cf --version
+
       - name: Deploy to Cloud Foundry
-        uses: citizen-of-planet-earth/cf-cli-action@v2
-        with:
-          cf_api: ${{ secrets.CF_API }}
-          cf_username: ${{ secrets.CF_USERNAME }}
-          cf_password: ${{ secrets.CF_PASSWORD }}
-          cf_org: ${{ secrets.CF_ORG }}
-          cf_space: ${{ secrets.CF_SPACE }}
-          command: push
-        env:
-          CF_DOCKER_PASSWORD: ${{ secrets.CF_PASSWORD }}
+        run: |
+          cf login -a ${{ secrets.CF_API }} -u ${{ secrets.CF_USERNAME }} -p ${{ secrets.CF_PASSWORD }} -o ${{ secrets.CF_ORG }} -s ${{ secrets.CF_SPACE }}
+          cd backend
+          cf push
 
       # -------------------------------
       # 📊 Create Prometheus & Grafana services
