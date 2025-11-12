@@ -1,0 +1,31 @@
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# Maven / Spring Boot
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+.classpath
+.project
+.settings/
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/cache/
+frontend/coverage/
+
+# Logs
+*.log
+
+# Cloud Foundry
+.cfignore
+.env
+*.cfignore
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
