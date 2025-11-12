@@ -8,6 +8,8 @@ applications:
     path: dist/frontend
     env:
       FORCE_HTTPS: true
-    # routes:
+      NODE_ENV: production
+
+      # routes:
       # - route: demo-frontend.cfapps.us10-001.hana.ondemand.com
 
