@@ -10,6 +10,7 @@ applications:
       JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
       SPRING_PROFILES_ACTIVE: cloud
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus
+    no-route: true # temporatily disable route creation to avoid quota issues to avoid deployment errors
     services:
       - prometheus-service
       - grafana-service

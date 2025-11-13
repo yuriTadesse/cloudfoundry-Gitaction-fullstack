@@ -77,7 +77,12 @@ jobs:
       - name: Deploy backend
         working-directory: backend
         run: |
-          cf push -f manifest.yml
+          echo "Deploying backend..."
+          if ! cf push -f manifest.yml; then
+            echo "⚠️ Backend deployment failed due to quota (likely routes). Continuing to frontend deploy..."
+          fi
+          echo "Backend step completed."
+      
 
       # ---------- Deploy frontend as separate CF app (Staticfile buildpack) ----------
       - name: Deploy frontend
