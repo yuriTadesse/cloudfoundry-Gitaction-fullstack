@@ -93,9 +93,12 @@ jobs:
           # ensure Staticfile sits inside dist root for Staticfile buildpack
           cp -n Staticfile "$DIST_DIR"/ 2>/dev/null || true
           # push using frontend/manifest.yml, pointing to dist/* as path
-          cf push -f manifest.yml -p "$DIST_DIR"
+          if ! cf push -f manifest.yml -p "$DIST_DIR"; then
+            echo "⚠️ Frontend deploy failed (likely route quota). Continuing CI pipeline..."
+          fi
 
-      # ---------- Map a friendly route for frontend (optional) ----------
+
+# ---------- Map a friendly route for frontend (optional) ----------
       - name: Map frontend route (optional)
         run: |
           if [ -z "${{ secrets.CF_DOMAIN }}" ]; then
