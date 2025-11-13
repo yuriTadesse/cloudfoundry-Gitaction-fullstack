@@ -9,6 +9,8 @@ applications:
     env:
       FORCE_HTTPS: true
       NODE_ENV: production
+    no-route: true # temporatily disable route creation to avoid quota issues to avoid deployment errors
+
 
       # routes:
       # - route: demo-frontend.cfapps.us10-001.hana.ondemand.com
