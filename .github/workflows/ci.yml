@@ -1,4 +1,4 @@
-name: build-and-deploy
+name: CI/CD to Cloud Foundry with Prometheus & Grafana
 
 on:
   push:
